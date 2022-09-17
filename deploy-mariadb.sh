@@ -123,7 +123,14 @@ echo
 echo Starting deployment...
 echo
 
-docker compose up -d
+if [[ $SWARM_MODE -gt 0 ]]
+then
+	echo Using Swarm Mode...
+	docker stack deploy --compose-file docker-compose.yml mariadb-$TOPOLOGY-topology
+else
+	echo Using Docker Compose...
+	docker compose up -d
+fi
 
 echo
 echo Configuring MariaDB $TOPOLOGY topology...
