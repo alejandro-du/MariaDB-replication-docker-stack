@@ -2,6 +2,7 @@ version: '3'
 
 services:
   node01:
+    container_name: $NODE01_CONTAINER_NAME
     image: mariadb:latest
     restart: unless-stopped
     volumes:
@@ -16,6 +17,7 @@ services:
         ipv4_address: $NODE_01_IP
 
   node02:
+    container_name: $NODE02_CONTAINER_NAME
     image: mariadb:latest
     restart: unless-stopped
     volumes:
@@ -31,9 +33,11 @@ services:
 
 volumes:
   node01_data:
+    name: node01_data
     driver: local
 
   node02_data:
+    name: node02_data
     driver: local
 
 networks:
