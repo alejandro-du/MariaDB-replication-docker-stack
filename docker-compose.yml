@@ -1,0 +1,48 @@
+version: '3'
+
+services:
+  mariadb-master:
+    container_name: $NODE01_CONTAINER_NAME
+    image: mariadb:latest
+    restart: unless-stopped
+    volumes:
+      - 'node01_data:/var/lib/mysql'
+      - './node01.cnf:/etc/mysql/mariadb.conf.d/server.cnf'
+    environment:
+      MARIADB_ROOT_PASSWORD: $NODE01_PASSWORD
+    ports:
+      - "$NODE01_PORT:3306"
+    networks:
+      mariadb-network:
+        ipv4_address: $NODE_01_IP
+
+  mariadb-slave:
+    container_name: $NODE02_CONTAINER_NAME
+    image: mariadb:latest
+    restart: unless-stopped
+    volumes:
+      - 'node02_data:/var/lib/mysql'
+      - './node02.cnf:/etc/mysql/mariadb.conf.d/server.cnf'
+    environment:
+      MARIADB_ROOT_PASSWORD: $NODE02_PASSWORD
+    ports:
+      - "$NODE02_PORT:3306"
+    networks:
+      mariadb-network:
+        ipv4_address: $NODE_02_IP
+
+volumes:
+  node01_data:
+    name: node01_data
+    driver: local
+
+  node02_data:
+    name: node02_data
+    driver: local
+
+networks:
+  mariadb-network:
+    ipam:
+      driver: default
+      config:
+        - subnet: $NETWORK_SUBNET
