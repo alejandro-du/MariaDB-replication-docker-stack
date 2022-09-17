@@ -33,11 +33,9 @@ services:
 
 volumes:
   node01_data:
-    name: node01_data
     driver: local
 
   node02_data:
-    name: node02_data
     driver: local
 
 networks:
