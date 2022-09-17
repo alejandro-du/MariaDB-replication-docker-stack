@@ -126,7 +126,7 @@ echo
 if [[ $SWARM_MODE -gt 0 ]]
 then
 	echo Using Swarm Mode...
-	docker stack deploy --compose-file docker-compose.yml mariadb-$TOPOLOGY-topology
+	docker stack deploy --compose-file docker-compose.yml mariadb
 else
 	echo Using Docker Compose...
 	docker compose up -d
