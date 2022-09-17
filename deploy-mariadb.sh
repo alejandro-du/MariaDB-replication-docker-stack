@@ -14,21 +14,21 @@
 primary-replica() {
 
 	echo Creating replication user...
-	docker exec $NODE01_CONTAINER_NAME \
+	docker exec node01 \
 		mariadb -u $NODE01_USER --password=$NODE01_PASSWORD \
 		--execute="create user '$REPLICATION_USER'@'%' identified by '$REPLICATION_PASSWORD';\
 			grant replication replica on *.* to '$REPLICATION_USER'@'%';\
 			flush privileges;"
 
 	echo Getting the binary log name and position...
-	result=$(docker exec $NODE01_CONTAINER_NAME mariadb -u $NODE01_USER --password=$NODE01_PASSWORD --execute="SHOW MASTER STATUS;")
+	result=$(docker exec node01 mariadb -u $NODE01_USER --password=$NODE01_PASSWORD --execute="SHOW MASTER STATUS;")
 	log=$(echo $result | awk '{print $5}')
 	position=$(echo $result | awk '{print $6}')
 	echo using log file: $log
 	echo using log position: $position
 
 	echo Connecting replica to primary...
-	docker exec $NODE02_CONTAINER_NAME \
+	docker exec node02 \
 		mariadb -u $NODE02_USER --password=$NODE02_PASSWORD \
 		--execute="STOP REPLICA;\
 			RESET REPLICA;\
@@ -48,31 +48,31 @@ primary-replica() {
 multi-primary() {
 
 	echo Creating replication user on node01...
-	docker exec $NODE01_CONTAINER_NAME \
+	docker exec node01 \
 		mariadb -u $NODE01_USER --password=$NODE01_PASSWORD \
 		--execute="create user '$REPLICATION_USER'@'%' identified by '$REPLICATION_PASSWORD';\
                         grant replication replica on *.* to '$REPLICATION_USER'@'%';\
                         flush privileges;"
 
 	echo Creating replication user on node02...
-	docker exec $NODE02_CONTAINER_NAME \
+	docker exec node02 \
 		mariadb -u $NODE02_USER --password=$NODE02_PASSWORD \
 		--execute="create user '$REPLICATION_USER'@'%' identified by '$REPLICATION_PASSWORD';\
                         grant replication replica on *.* to '$REPLICATION_USER'@'%';\
                         flush privileges;"
 
 	echo Getting the binary log name and position on node01...
-	node01_result=$(docker exec $NODE01_CONTAINER_NAME mariadb -u $NODE01_USER --password=$NODE01_PASSWORD --execute="SHOW BINLOG STATUS;")
+	node01_result=$(docker exec node01 mariadb -u $NODE01_USER --password=$NODE01_PASSWORD --execute="SHOW BINLOG STATUS;")
 	node01_log=$(echo $node01_result | awk '{print $5}')
 	node01_position=$(echo $node01_result | awk '{print $6}')
 
 	echo Getting the binary log name and position on node02...
-	node02_result=$(docker exec $NODE02_CONTAINER_NAME mariadb -u $NODE02_USER --password=$NODE02_PASSWORD --execute="SHOW BINLOG STATUS;")
+	node02_result=$(docker exec node02 mariadb -u $NODE02_USER --password=$NODE02_PASSWORD --execute="SHOW BINLOG STATUS;")
 	node02_log=$(echo $node02_result | awk '{print $5}')
 	node02_position=$(echo $node02_result | awk '{print $6}')
 
 	echo Connecting node02 to node01...
-	docker exec $NODE02_CONTAINER_NAME \
+	docker exec node02 \
 		mariadb -u $NODE02_USER --password=$NODE02_PASSWORD \
 		--execute="STOP REPLICA;\
                         RESET REPLICA;\
@@ -82,7 +82,7 @@ multi-primary() {
                         SHOW REPLICA STATUS\G;"
 
 	echo Connecting node01 to node02...
-	docker exec $NODE01_CONTAINER_NAME \
+	docker exec node01 \
 		mariadb -u $NODE01_USER --password=$NODE01_PASSWORD \
 		--execute="STOP REPLICA;\
                         RESET REPLICA;\
@@ -94,7 +94,7 @@ multi-primary() {
 	sleep 2
 	echo
 	echo ###################	node01 status    ###################
-	docker exec $NODE01_CONTAINER_NAME \
+	docker exec node01 \
 		mariadb -u $NODE01_USER --password=$NODE01_PASSWORD \
 		--execute="SHOW REPLICA STATUS\G;"
 
@@ -102,7 +102,7 @@ multi-primary() {
 	sleep2
 	echo
 	echo ###################	node02 status    ###################
-	docker exec $NODE02_CONTAINER_NAME \
+	docker exec node02 \
 		mariadb -u $NODE02_USER --password=$NODE02_PASSWORD \
 		--execute="SHOW REPLICA STATUS\G;"
 

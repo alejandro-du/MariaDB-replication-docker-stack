@@ -1,8 +1,7 @@
 version: '3'
 
 services:
-  mariadb-master:
-    container_name: $NODE01_CONTAINER_NAME
+  node01:
     image: mariadb:latest
     restart: unless-stopped
     volumes:
@@ -16,8 +15,7 @@ services:
       mariadb-network:
         ipv4_address: $NODE_01_IP
 
-  mariadb-slave:
-    container_name: $NODE02_CONTAINER_NAME
+  node02:
     image: mariadb:latest
     restart: unless-stopped
     volumes:
