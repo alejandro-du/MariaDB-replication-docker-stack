@@ -21,7 +21,7 @@ primary-replica() {
 			flush privileges;"
 
 	echo Getting the binary log name and position...
-	result=$(docker exec $NODE01_CONTAINER_NAME mariadb -u $NODE01_USER --password=$NODE01_PASSWORD --execute="SHOW MASTER STATUS;")
+	result=$(docker exec $NODE01_CONTAINER_NAME mariadb -u $NODE01_USER --password=$NODE01_PASSWORD --execute="SHOW BINLOG STATUS;")
 	log=$(echo $result | awk '{print $5}')
 	position=$(echo $result | awk '{print $6}')
 	echo using log file: $log

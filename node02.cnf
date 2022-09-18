@@ -4,5 +4,5 @@
 # these configs are mandatory, Don't change them.
 # able to add other configs at the end of this file.
 [mariadb]
-log_bin         = node02_log_bin
-server_id       = 2
+log-bin         = node02_log_bin
+server-id       = 2
